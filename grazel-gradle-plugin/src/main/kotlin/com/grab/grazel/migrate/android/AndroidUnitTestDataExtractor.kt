@@ -37,7 +37,7 @@ import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
-internal const val FORMAT_UNIT_TEST_NAME = "%s-test"
+internal const val FORMAT_UNIT_TEST_NAME = "%s%s-test"
 
 internal interface AndroidUnitTestDataExtractor {
     fun extract(project: Project, mergedVariant: MergedVariant): AndroidUnitTestData
@@ -58,7 +58,10 @@ internal class DefaultAndroidUnitTestDataExtractor @Inject constructor(
     private val kotlinExtension: KotlinExtension get() = grazelExtension.rules.kotlin
 
     override fun extract(project: Project, mergedVariant: MergedVariant): AndroidUnitTestData {
-        val name = FORMAT_UNIT_TEST_NAME.format(project.name)
+        val name = FORMAT_UNIT_TEST_NAME.format(
+            project.name,
+            mergedVariant.variantName.variantNameSuffix()
+        )
 
         val migratableSourceSets = mergedVariant.variant.sourceSets
             .asSequence()
@@ -93,7 +96,7 @@ internal class DefaultAndroidUnitTestDataExtractor @Inject constructor(
         } else emptyList()
 
         return AndroidUnitTestData(
-            name = "$name${mergedVariant.variantName.variantNameSuffix()}",
+            name = name,
             srcs = srcs,
             additionalSrcSets = additionalSrcSets,
             deps = deps,
@@ -105,7 +108,7 @@ internal class DefaultAndroidUnitTestDataExtractor @Inject constructor(
     }
 
     private fun targetVariantSuffix(variant: MergedVariant) =
-        ("${variant.variantName}".variantNameSuffix())
+        (variant.variantName.variantNameSuffix())
 
     private fun Project.unitTestSources(
         sourceSets: Sequence<AndroidSourceSet>,

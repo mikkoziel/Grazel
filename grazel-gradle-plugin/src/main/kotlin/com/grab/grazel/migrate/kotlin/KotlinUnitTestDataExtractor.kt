@@ -58,7 +58,7 @@ internal class DefaultKotlinUnitTestDataExtractor @Inject constructor(
     private val projectDependencyGraphs get() = dependencyGraphsProvider.get()
 
     override fun extract(project: Project): UnitTestData {
-        val name = FORMAT_UNIT_TEST_NAME.format(project.name)
+        val name = FORMAT_UNIT_TEST_NAME.format(project.name, "")
         val sourceSets = project.the<KotlinJvmProjectExtension>().sourceSets
 
         val srcs = project.kotlinTestSources(sourceSets).toList()
