@@ -27,7 +27,7 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 git_repository(
     name = "grab_bazel_common",
-    commit = "f5f196d46406e44c00b64cb767de9d9eb7219c2e",
+    commit = "07d767f305ee0511f32bcf4df1f669cfa4b3b535",
     remote = "https://github.com/grab/grab-bazel-common.git",
 )
 
@@ -41,6 +41,10 @@ bazel_common_initialize(
     buildifier_version = "5.1.0",
     patched_android_tools = True,
 )
+
+load("@grab_bazel_common//android:maven.bzl", "pin_bazel_common_artifacts")
+
+pin_bazel_common_artifacts()
 
 DAGGER_TAG = "2.37"
 
