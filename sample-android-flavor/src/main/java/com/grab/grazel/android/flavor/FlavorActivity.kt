@@ -25,7 +25,11 @@ import com.grab.grazel.android.flavor.databinding.ActivityFlavorBinding
 class FlavorActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = DataBindingUtil.setContentView<ActivityFlavorBinding>(this, R.layout.activity_flavor)
+        val binding = DataBindingUtil
+            .setContentView<ActivityFlavorBinding>(
+                this,
+                R.layout.activity_flavor
+            )
         findViewById<TextView>(R.id.text).text = HelloFlavorMessage().message(this)
         findViewById<TextView>(R.id.text2).text = "With dep from ${ModuleName().name()}"
         binding.viewModel = ViewModel("Text set from Binding adapter")

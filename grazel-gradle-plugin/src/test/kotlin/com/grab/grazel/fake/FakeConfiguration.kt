@@ -37,7 +37,7 @@ import org.gradle.api.specs.Spec
 import org.gradle.api.tasks.TaskDependency
 import java.io.File
 
-class FakeConfiguration(private val name : String = "") : Configuration {
+class FakeConfiguration(private val name: String = "") : Configuration {
 
     override fun iterator(): MutableIterator<File> {
         TODO("Not yet implemented")

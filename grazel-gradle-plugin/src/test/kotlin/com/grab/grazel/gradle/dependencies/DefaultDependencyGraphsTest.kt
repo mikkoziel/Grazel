@@ -70,7 +70,10 @@ class DefaultDependencyGraphsTest {
         val directDepsFromAWithBuildScope = setOf(projectB, projectC)
         assertEquals(
             directDepsFromAWithBuildScope,
-            dependenciesGraphs.directDependencies(projectA, BuildGraphType(ConfigurationScope.BUILD))
+            dependenciesGraphs.directDependencies(
+                projectA,
+                BuildGraphType(ConfigurationScope.BUILD)
+            )
         )
     }
 

@@ -120,5 +120,4 @@ class VariantsMergerTest {
             .evaluate()
             .verifyDepMergedVariantsThrow(VariantIsNotPresentException::class.java)
     }
-
 }

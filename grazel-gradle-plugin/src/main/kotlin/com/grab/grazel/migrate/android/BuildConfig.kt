@@ -33,11 +33,11 @@ internal data class BuildConfigData(
 
 internal fun BaseExtension.extractBuildConfig(
     project: Project,
-    variant:BaseVariant
+    variant: BaseVariant
 ): BuildConfigData {
     val buildConfigFields: Map<String, ClassField> = (
         variant.buildType?.buildConfigFields
-        ?: emptyMap()) +
+            ?: emptyMap()) +
         defaultConfig.buildConfigFields.toMap() +
         project.androidBinaryBuildConfigFields(this)
     val buildConfigTypeMap = buildConfigFields

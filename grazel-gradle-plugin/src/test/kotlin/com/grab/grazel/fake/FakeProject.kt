@@ -63,7 +63,7 @@ import java.net.URI
 import java.util.concurrent.Callable
 
 class FakeProject(private val name: String) : Project {
-    var shadowConfigurations : List<Configuration> = emptyList()
+    var shadowConfigurations: List<Configuration> = emptyList()
 
     override fun toString(): String = name
 

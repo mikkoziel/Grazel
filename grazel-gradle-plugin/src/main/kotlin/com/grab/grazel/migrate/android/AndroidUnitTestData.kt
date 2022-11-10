@@ -16,7 +16,6 @@
 
 package com.grab.grazel.migrate.android
 
-import com.android.build.gradle.api.BaseVariant
 import com.grab.grazel.bazel.starlark.BazelDependency
 
 data class AndroidUnitTestData(

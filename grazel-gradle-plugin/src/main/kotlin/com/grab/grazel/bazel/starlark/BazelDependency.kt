@@ -17,7 +17,6 @@
 package com.grab.grazel.bazel.starlark
 
 import com.grab.grazel.gradle.buildTargetName
-import com.grab.grazel.gradle.dependencies.BuildGraphType
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 

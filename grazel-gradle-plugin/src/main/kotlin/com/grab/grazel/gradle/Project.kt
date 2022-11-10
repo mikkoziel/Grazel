@@ -60,10 +60,11 @@ val Project.hasKotlinAndroidExtensions
         || plugins.hasPlugin(KOTLIN_PARCELIZE)
 val Project.isKotlin get() = isKotlinJvm || isKotlinAndroid
 
-val Project.hasTestInstrumentationRunner get() = !extensions
-    .findByType<BaseExtension>()
-    ?.extractTestInstrumentationRunner()
-    .isNullOrBlank()
+val Project.hasTestInstrumentationRunner
+    get() = !extensions
+        .findByType<BaseExtension>()
+        ?.extractTestInstrumentationRunner()
+        .isNullOrBlank()
 
 const val JAVA_PLUGIN = "java"
 const val JAVA_LIBRARY_PLUGIN = "java-library"

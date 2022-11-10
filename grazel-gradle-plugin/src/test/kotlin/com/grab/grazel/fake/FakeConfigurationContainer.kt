@@ -58,7 +58,9 @@ class FakeConfigurationContainer(private var configurations: List<Configuration>
         TODO("Not yet implemented")
     }
 
-    override fun iterator(): MutableIterator<Configuration> = configurations.toMutableList().iterator()
+    override fun iterator(): MutableIterator<Configuration> = configurations
+        .toMutableList()
+        .iterator()
 
     override fun remove(element: Configuration?): Boolean {
         TODO("Not yet implemented")

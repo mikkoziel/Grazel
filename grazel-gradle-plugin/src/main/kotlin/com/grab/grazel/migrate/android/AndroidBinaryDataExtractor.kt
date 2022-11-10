@@ -35,7 +35,11 @@ import javax.inject.Singleton
 
 
 internal interface AndroidBinaryDataExtractor {
-    fun extract(project: Project, variant: BaseVariant, androidLibraryData: AndroidLibraryData): AndroidBinaryData
+    fun extract(
+        project: Project,
+        variant: BaseVariant,
+        androidLibraryData: AndroidLibraryData
+    ): AndroidBinaryData
 }
 
 @Singleton

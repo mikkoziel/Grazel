@@ -19,12 +19,11 @@ package com.grab.grazel.gradle.dependencies
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class BuildGraphTypeKtTest{
+class BuildGraphTypeKtTest {
 
     @Test
-    fun test(){
-        assertEquals("-app-gps-debug","appGpsDebug".variantNameSuffix())
-        assertEquals("-app-gps-debug","AppGpsDebug".variantNameSuffix())
+    fun test() {
+        assertEquals("-app-gps-debug", "appGpsDebug".variantNameSuffix())
+        assertEquals("-app-gps-debug", "AppGpsDebug".variantNameSuffix())
     }
-
 }

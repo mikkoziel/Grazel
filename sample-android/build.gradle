@@ -75,7 +75,7 @@ android {
         release {
             res.srcDirs += "src/main/res-release"
         }
-        staging{
+        staging {
             res.srcDirs += "src/main/res-staging"
         }
     }
