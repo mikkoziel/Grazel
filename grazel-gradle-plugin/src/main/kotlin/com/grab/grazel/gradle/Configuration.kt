@@ -18,6 +18,8 @@ package com.grab.grazel.gradle
 
 import com.android.build.gradle.api.BaseVariant
 import com.grab.grazel.GrazelExtension
+import com.grab.grazel.gradle.VariantInfo.AndroidFlavor
+import com.grab.grazel.gradle.VariantInfo.AndroidVariant
 import com.grab.grazel.gradle.dependencies.BuildGraphType
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
@@ -26,7 +28,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 enum class ConfigurationScope(val scopeName: String) {
-    BUILD(""), TEST("UnitTest"), ANDROID_TEST("AndroidTest");
+    BUILD(""),
+    TEST("UnitTest"),
+    ANDROID_TEST("AndroidTest");
 }
 
 internal fun GrazelExtension.configurationScopes(): Array<ConfigurationScope> {
@@ -57,7 +61,7 @@ internal interface ConfigurationDataSource {
      */
     fun configurations(
         project: Project,
-        vararg scope: ConfigurationScope
+        vararg scopes: ConfigurationScope
     ): Sequence<Configuration>
 
     fun isThisConfigurationBelongsToThisVariants(
@@ -65,6 +69,11 @@ internal interface ConfigurationDataSource {
         vararg variants: BaseVariant?,
         configuration: Configuration
     ): Boolean
+
+    fun configurationByVariant(
+        project: Project,
+        vararg scopes: ConfigurationScope
+    ): Map<VariantInfo, List<Configuration>>
 }
 
 @Singleton
@@ -78,11 +87,31 @@ internal class DefaultConfigurationDataSource @Inject constructor(
     ): Sequence<Configuration> {
         val ignoreFlavors = androidVariantDataSource.getIgnoredFlavors(project)
         val ignoreVariants = androidVariantDataSource.getIgnoredVariants(project)
+        return filterConfigurations(project, scopes)
+            .filter { config ->
+                !config.name.let { configurationName ->
+                    ignoreFlavors.any { configurationName.contains(it.name, true) }
+                        || ignoreVariants.any { configurationName.contains(it.name, true) }
+                }
+            }
+    }
+
+    /**
+     * Only allow relevant configurations required for build. Ideally for android projects we could
+     * rely on [BaseVariant.getCompileConfiguration] etc but other configurations added by plugins won't
+     * be present there. Hence we get all configurations in the project and filter by name with some
+     * assumptions
+     */
+    private fun filterConfigurations(
+        project: Project,
+        scopes: Array<out ConfigurationScope> = ConfigurationScope.values(),
+        variantNameFilter: String? = null
+    ): Sequence<Configuration> {
         return project.configurations
             .asSequence()
             .filter { !it.name.contains("classpath", true) && !it.name.contains("lint") }
             .filter { !it.name.contains("coreLibraryDesugaring") }
-            .filter { !it.name.contains("_internal_aapt2_binary") }
+            .filter { !it.name.startsWith("_") }
             .filter { !it.name.contains("archives") }
             .filter { !it.isDynamicConfiguration() } // Remove when Grazel support dynamic-feature plugin
             .filter { configuration ->
@@ -97,13 +126,9 @@ internal class DefaultConfigurationDataSource @Inject constructor(
                     }
                 }
             }
-            .distinct()
-            .filter { config ->
-                !config.name.let { configurationName ->
-                    ignoreFlavors.any { configurationName.contains(it.name, true) }
-                        || ignoreVariants.any { configurationName.contains(it.name, true) }
-                }
-            }
+            .filter {
+                if (variantNameFilter != null) it.name.startsWith(variantNameFilter) else true
+            }.distinct()
     }
 
     override fun isThisConfigurationBelongsToThisVariants(
@@ -129,6 +154,44 @@ internal class DefaultConfigurationDataSource @Inject constructor(
             project,
             *buildGraphTypes.map { it.configurationScope }.toTypedArray()
         ).filter { it.isCanBeResolved }
+    }
+
+    override fun configurationByVariant(
+        project: Project,
+        vararg scopes: ConfigurationScope
+    ): Map<VariantInfo, List<Configuration>> {
+        return if (project.isAndroid) {
+            val availableConfigurations = configurations(project)
+            val availableVariants = androidVariantDataSource.getMigratableVariants(project)
+            return availableConfigurations
+                .groupBy { configuration -> calculateVariantKey(availableVariants, configuration) }
+        } else {
+            mapOf(VariantInfo.Default to configurations(project).toList())
+        }
+    }
+
+    /** Return the grouping key that will be used to split the configurations,
+     *  first checks a matching variant, then flavor, then build type and fallback to `VariantInfo.Default`.
+     *  We could ideally just group by variant name but that is not sufficient since
+     *  there can be configurations like `debugImplementation` etc that might not
+     *  have been caught by variant name check but will be caught by buildType check.
+     */
+    private fun calculateVariantKey(
+        availableVariants: List<BaseVariant>,
+        configuration: Configuration
+    ): VariantInfo {
+        val matchingVariant = availableVariants
+            .firstOrNull() { variant -> configuration.name.startsWith(variant.name) }
+        val matchingFlavor = availableVariants
+            .firstOrNull() { variant -> configuration.name.startsWith(variant.flavorName) }
+        val matchingBuildType = availableVariants
+            .firstOrNull() { variant -> configuration.name.startsWith(variant.buildType.name) }
+        return when {
+            matchingVariant != null -> AndroidVariant(matchingVariant)
+            matchingFlavor?.flavorName?.isNotEmpty() == true -> AndroidFlavor(matchingFlavor.flavorName)
+            matchingBuildType != null -> AndroidFlavor(matchingBuildType.name)
+            else -> VariantInfo.Default
+        }
     }
 }
 

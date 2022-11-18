@@ -39,15 +39,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * TODO To remove this once test rules support is added
- */
-private val DEFAULT_MAVEN_ARTIFACTS: List<MavenArtifact> = listOf(
-    MavenArtifact("junit", "junit", "4.12"),
-    MavenArtifact("org.mockito", "mockito-core", "3.4.6"),
-    MavenArtifact("com.nhaarman", "mockito-kotlin", "1.6.0")
-)
-
-/**
  * Maven group names for artifacts that should be excluded from dependencies calculation everywhere.
  */
 internal val DEP_GROUP_EMBEDDED_BY_RULES = listOf(
@@ -55,7 +46,11 @@ internal val DEP_GROUP_EMBEDDED_BY_RULES = listOf(
     "org.jetbrains.kotlin"
 )
 
-data class ExcludeRule(
+@Deprecated(
+    "No longer used, use com.grab.grazel.gradle.dependencies.ExcludeRule instead.",
+    replaceWith = ReplaceWith("ExcludeRule", "com.grab.grazel.gradle.dependencies.ExcludeRule")
+)
+data class ExcludeRuleOld(
     val group: String,
     val artifact: String
 ) {
@@ -69,7 +64,7 @@ internal data class MavenArtifact(
     val group: String?,
     val name: String?,
     val version: String? = null,
-    val excludeRules: Set<ExcludeRule> = emptySet()
+    val excludeRuleOlds: Set<ExcludeRuleOld> = emptySet()
 ) {
     val id get() = "$group:$name"
     override fun toString() = "$group:$name:$version"
@@ -263,15 +258,15 @@ internal class DefaultDependenciesDataSource @Inject constructor(
             }
             .let(::collectForcedVersions)
 
-        return (DEFAULT_MAVEN_ARTIFACTS + externalArtifacts + forcedVersions)
+        return (externalArtifacts + forcedVersions)
             .groupBy { it.id }
             .map { (_, mavenArtifacts) ->
                 // Merge all exclude rules so that we have a cumulative set
                 mavenArtifacts
                     .first()
                     .copy(
-                        excludeRules = mavenArtifacts
-                            .flatMap(MavenArtifact::excludeRules)
+                        excludeRuleOlds = mavenArtifacts
+                            .flatMap(MavenArtifact::excludeRuleOlds)
                             .toSet()
                     )
             }.asSequence()
@@ -456,11 +451,11 @@ internal class DefaultDependenciesDataSource @Inject constructor(
             group = group,
             name = name,
             version = version,
-            excludeRules = excludeRules
+            excludeRuleOlds = excludeRules
                 .asSequence()
                 .map {
                     @Suppress("USELESS_ELVIS") // Gradle lying, module can be null
-                    ExcludeRule(it.group, it.module ?: "")
+                    ExcludeRuleOld(it.group, it.module ?: "")
                 }
                 .filterNot { it.artifact.isNullOrBlank() }
                 .filterNot { excludeArtifactsDenyList.contains(it.toString()) }
@@ -477,12 +472,12 @@ internal class DefaultDependenciesDataSource @Inject constructor(
 
 internal fun MavenArtifact.toMavenInstallArtifact(): MavenInstallArtifact {
     return when {
-        excludeRules.isEmpty() -> MavenInstallArtifact.SimpleArtifact(toString())
+        excludeRuleOlds.isEmpty() -> MavenInstallArtifact.SimpleArtifact(toString())
         else -> MavenInstallArtifact.DetailedArtifact(
             group = group!!,
             artifact = name!!,
             version = version!!,
-            exclusions = excludeRules.map { SimpleExclusion("${it.group}:${it.artifact}") }
+            exclusions = excludeRuleOlds.map { SimpleExclusion("${it.group}:${it.artifact}") }
         )
     }
 }
