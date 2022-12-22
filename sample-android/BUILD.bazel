@@ -47,7 +47,7 @@ android_binary(
             "src/main/res-debug/values/strings.xml",
         ]),
         target = "sample-android-flavor2-debug",
-    ) + GOOGLE_SERVICES_XML,
+    ),
     visibility = [
         "//visibility:public",
     ],
@@ -95,7 +95,7 @@ android_binary(
             "src/main/res-debug/values/strings.xml",
         ]),
         target = "sample-android-flavor1-debug",
-    ) + GOOGLE_SERVICES_XML,
+    ),
     visibility = [
         "//visibility:public",
     ],
