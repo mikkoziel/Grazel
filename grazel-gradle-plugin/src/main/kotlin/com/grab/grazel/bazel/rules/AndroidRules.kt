@@ -16,6 +16,7 @@
 
 package com.grab.grazel.bazel.rules
 
+import com.android.builder.model.Version
 import com.grab.grazel.bazel.starlark.Assignee
 import com.grab.grazel.bazel.starlark.BazelDependency
 import com.grab.grazel.bazel.starlark.StatementsBuilder
@@ -214,7 +215,7 @@ internal const val DATABINDING_GROUP = "androidx.databinding"
 internal const val ANDROIDX_GROUP = "androidx.annotation"
 internal const val ANNOTATION_ARTIFACT = "annotation"
 internal val DATABINDING_ARTIFACTS by lazy {
-    val version = "7.2.2" // TODO(arun) Infer this from AGP
+    val version = Version.ANDROID_GRADLE_PLUGIN_VERSION
     listOf(
         MavenArtifact(DATABINDING_GROUP, "databinding-adapters", version),
         MavenArtifact(DATABINDING_GROUP, "databinding-compiler", version),
