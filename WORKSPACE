@@ -88,19 +88,19 @@ maven_install(
             version = "1.1.2",
         ),
         "androidx.core:core:1.5.0",
-        "androidx.databinding:databinding-adapters:7.1.2",
-        "androidx.databinding:databinding-common:7.1.2",
-        "androidx.databinding:databinding-compiler:7.1.2",
-        "androidx.databinding:databinding-runtime:7.1.2",
-        "androidx.databinding:viewbinding:7.1.2",
+        "androidx.databinding:databinding-adapters:7.2.2",
+        "androidx.databinding:databinding-common:7.2.2",
+        "androidx.databinding:databinding-compiler:7.2.2",
+        "androidx.databinding:databinding-runtime:7.2.2",
+        "androidx.databinding:viewbinding:7.2.2",
         "androidx.test.espresso:espresso-core:3.4.0",
         "androidx.test.ext:junit:1.1.3",
         "com.squareup.leakcanary:leakcanary-android:2.10",
         "junit:junit:4.13.2",
-        "org.jacoco:org.jacoco.ant:0.8.3",
+        "org.jacoco:org.jacoco.ant:0.8.7",
         "org.jetbrains.kotlin:kotlin-annotation-processing-gradle:1.6.10",
-        "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.32",
-        "org.jetbrains.kotlin:kotlin-stdlib:1.4.32",
+        "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31",
+        "org.jetbrains.kotlin:kotlin-stdlib:1.5.31",
     ],
     excluded_artifacts = ["androidx.test.espresso:espresso-contrib"],
     fail_on_missing_checksum = False,
@@ -143,8 +143,8 @@ pinned_maven_install()
 
 android_sdk_repository(
     name = "androidsdk",
-    api_level = 30,
-    build_tools_version = "30.0.2",
+    api_level = 33,
+    build_tools_version = "33.0.1",
 )
 
 android_ndk_repository(

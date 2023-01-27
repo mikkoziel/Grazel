@@ -17,6 +17,7 @@
 package com.grab.grazel.migrate.android
 
 import com.android.build.gradle.BaseExtension
+import com.android.builder.model.Version.ANDROID_GRADLE_PLUGIN_VERSION
 
 data class ResValues(
     val stringValues: Map<String, String> = emptyMap()
@@ -27,4 +28,26 @@ data class ResValues(
 fun BaseExtension.extractResValue(): ResValues =
     defaultConfig.resValues
         .mapValues { it.value.value }
+        .mapKeys { getKeyValue(it.key) }
         .run { ResValues(this) }
+
+/**
+ * Example:
+ * constraint: AGP 7.2.2
+ * input: string/generated_value
+ * output: generated_value
+ *
+ * constraint: AGP 7.1.2
+ * input: generated_value
+ * output: generated_value
+ */
+private fun getKeyValue(key: String): String {
+    val agpVersion = ANDROID_GRADLE_PLUGIN_VERSION.split(".")
+    val majorVersion = agpVersion[0].toInt()
+    val minorVersion = agpVersion[1].toInt()
+    return if (majorVersion >= 7 && minorVersion >= 2) {
+        key.substring(key.indexOf("/") + 1, key.length)
+    } else {
+        key
+    }
+}
