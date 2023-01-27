@@ -79,7 +79,7 @@ gradlePlugin {
 dependencies {
     implementation platform("org.jetbrains.kotlin:kotlin-bom")
     implementation libs.kotlin.gradle.plugin
-    implementation libs.android.gradle.plugin
+    compileOnly libs.android.gradle.plugin
 
     implementation libs.google.guava
     implementation libs.picnic
