@@ -70,9 +70,11 @@ android {
         }
         free {
             dimension "release"
+            applicationIdSuffix ".free"
         }
         paid {
             dimension "release"
+            applicationIdSuffix ".paid"
         }
     }
 
