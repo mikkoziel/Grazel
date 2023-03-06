@@ -56,6 +56,10 @@ internal interface AndroidVariantDataSource {
         project: Project,
         configurationScope: ConfigurationScope?
     ): Set<BaseVariant>
+
+    fun buildTypeFallbacks(project: Project): Map<String, Set<String>>
+
+    fun flavorFallbacks(project: Project): Map<String, Set<String>>
 }
 
 internal class DefaultAndroidVariantDataSource(
@@ -94,6 +98,30 @@ internal class DefaultAndroidVariantDataSource(
 
     override fun getMigratableVariants(project: Project): List<BaseVariant> {
         return project.androidVariants().filterNot(::ignoredVariantFilter)
+    }
+
+    override fun buildTypeFallbacks(project: Project): Map<String, Set<String>> {
+        return androidVariantsExtractor.getBuildTypes(project)
+            .groupBy { it.name }
+            .mapValues { (_, buildTypes) ->
+                buildTypes
+                    .filterIsInstance<com.android.build.gradle.internal.dsl.BuildType>()
+                    .map { it.matchingFallbacks }
+                    .flatten()
+                    .toSet()
+            }
+    }
+
+    override fun flavorFallbacks(project: Project): Map<String, Set<String>> {
+        return androidVariantsExtractor.getFlavors(project)
+            .groupBy { it.name }
+            .mapValues { (_, flavors) ->
+                flavors
+                    .filterIsInstance<com.android.build.gradle.internal.dsl.ProductFlavor>()
+                    .map { it.matchingFallbacks }
+                    .flatten()
+                    .toSet()
+            }
     }
 
     private fun ignoredVariantFilter(
