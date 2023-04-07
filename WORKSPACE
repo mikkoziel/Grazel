@@ -92,7 +92,7 @@ maven_install(
         "androidx.databinding:databinding-common:7.2.2",
         "androidx.databinding:databinding-compiler:7.2.2",
         "androidx.databinding:databinding-runtime:7.2.2",
-        "androidx.databinding:viewbinding:7.2.2",
+        "androidx.databinding:viewbinding:7.4.2",
         "androidx.test.espresso:espresso-core:3.4.0",
         "androidx.test.ext:junit:1.1.3",
         "com.squareup.leakcanary:leakcanary-android:2.10",
