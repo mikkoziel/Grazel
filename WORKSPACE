@@ -96,7 +96,7 @@ maven_install(
         "androidx.test.espresso:espresso-core:3.4.0",
         "androidx.test.ext:junit:1.1.3",
         "com.squareup.leakcanary:leakcanary-android:2.10",
-        "junit:junit:4.13.2",
+        "junit:junit:4.13.2.2",
         "org.jacoco:org.jacoco.ant:0.8.7",
         "org.jetbrains.kotlin:kotlin-annotation-processing-gradle:1.6.10",
         "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31",
