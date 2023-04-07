@@ -64,6 +64,7 @@ _sandbox
 
 # Bazel
 bazel-*
+!bazel-steward.yaml
 databinding_info.bazelrc
 
 local.bazelrc
