@@ -75,7 +75,7 @@ load("@rules_jvm_external//:specs.bzl", "maven")
 
 maven_install(
     artifacts = DAGGER_ARTIFACTS + GRAB_BAZEL_COMMON_ARTIFACTS + [
-        "androidx.annotation:annotation:1.1.0",
+        "androidx.annotation:annotation:1.6.0",
         "androidx.appcompat:appcompat:1.3.1",
         "androidx.constraintlayout:constraintlayout-core:1.0.4",
         maven.artifact(
