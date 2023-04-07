@@ -88,7 +88,7 @@ maven_install(
             version = "2.1.4",
         ),
         "androidx.core:core:1.5.0",
-        "androidx.databinding:databinding-adapters:7.2.2",
+        "androidx.databinding:databinding-adapters:7.4.2",
         "androidx.databinding:databinding-common:7.2.2",
         "androidx.databinding:databinding-compiler:7.2.2",
         "androidx.databinding:databinding-runtime:7.2.2",
